@@ -1,13 +1,21 @@
 import React, { useState } from "react";
+import axios from "axios"
 
 const Signup = () => {
   const [name, setname] = useState("");
   const [email, Setemail] = useState("");
-  const [passeword, Setpassword] = useState("");
+  const [password, Setpassword] = useState("");
 
-  const HandleSubmit = () => {
-    if (name && email && passeword) {
-      console.log("account created successfully");
+  const HandleSubmit = async () => {
+    if (name && email && password) {
+      const userdata = await axios
+        .post("http://localhost:5000/singup", { name, email, password })
+        .then((res) => {
+          console.log(res);
+        }).catch((errr )=>{
+          console.log(errr);
+          
+        })
     }
   };
   return (
@@ -48,7 +56,7 @@ const Signup = () => {
                 Password
               </label>
               <input
-                value={passeword}
+                value={password}
                 onChange={(e) => Setpassword(e.target.value)}
                 className="w-[400px] h-[47px] border rounded-md border-teal-500 placeholder:text-lg placeholder:text-teal-500 placeholder:font-semibold placeholder:font-sans placeholder:px-2"
                 type="password"
