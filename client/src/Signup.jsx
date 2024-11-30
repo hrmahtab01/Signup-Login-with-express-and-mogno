@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios"
+import {Link, useNavigate} from "react-router-dom"
 
 const Signup = () => {
   const [name, setname] = useState("");
   const [email, Setemail] = useState("");
   const [password, Setpassword] = useState("");
+  const navigate = useNavigate()
+ 
 
   const HandleSubmit = async () => {
     if (name && email && password) {
@@ -12,6 +15,7 @@ const Signup = () => {
         .post("http://localhost:5000/singup", { name, email, password })
         .then((res) => {
           console.log(res);
+          navigate("/login")
         }).catch((errr )=>{
           console.log(errr);
           
@@ -24,7 +28,7 @@ const Signup = () => {
         <div>
           <h1 className="text-white text-3xl font-bold font-sans text-center mt-2">
             {" "}
-            Create account
+          Signup
           </h1>
           <div className="mt-4 flex justify-center flex-col gap-4">
             <div className="px-2 flex flex-col gap-2">
@@ -52,7 +56,7 @@ const Signup = () => {
               />
             </div>
             <div className="px-2 flex flex-col gap-2">
-              <label className="text-white font-semibold font-sans text-2xl">
+              <label className="text-white font-semibold font-sans text-2xl">  
                 Password
               </label>
               <input
@@ -70,6 +74,7 @@ const Signup = () => {
           >
             Signup
           </button>
+          <p className="text-lg font-sans font-semibold text-teal-500  text-center mt-5">Already have an accout <Link to="/login"><span className="font-bold text-red-500"> Login</span></Link></p>
         </div>
       </div>
     </div>
