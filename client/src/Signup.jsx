@@ -12,7 +12,7 @@ const Signup = () => {
   const HandleSubmit = async () => {
     if (name && email && password) {
       const userdata = await axios
-        .post("http://localhost:5000/singup", { name, email, password })
+        .post("http://localhost:5000/signup", { name, email, password })
         .then((res) => {
           console.log(res);
           navigate("/login")

@@ -3,42 +3,55 @@ const cors = require("cors");
 const connectdb = require("./Dbconfig/Connectdb");
 const usermodel = require("./Model/usermodel");
 const app = express();
+const dotenv = require("dotenv").config();
+const bcrypt = require("bcrypt");
 connectdb();
 
 app.use(express.json());
 app.use(cors());
 
-app.post("/login", async (req , res)=>{
-const {email , password}= req.body
-  try {
-    await usermodel.findOne({password: password}).then((result)=>{
-      if (result) {
-        if (result.password === password) {
-          res.status(200).send("login seccessfully")
-        }else{
-          res.status(500).send("something went wrong in login ")
-        }
-         
-        
-      }else{
-        res.status(500).send("the user in not exit")
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
 
-      }
-    })
-  } catch (error) {
-    console.log(error);
-    
-  }
-})
-app.post("/singup", async (req, res) => {
   try {
-    const userdata = await usermodel.create(req.body);
-    res.status(201).send("create user data seccessfully");
+    const user = await usermodel.findOne({ email });
+
+    if (!user) {
+      return res.status(400).send("User not found");
+    }
+
+    bcrypt.compare(password, user.password, function (err, result) {
+      if (err) {
+        return res.status(500).send("Error comparing passwords");
+      }
+
+      if (result) {
+        res.status(200).send("Login successfully");
+      } else {
+        res.status(400).send("Incorrect password");
+      }
+    });
   } catch (error) {
-    res.status(500).send("something went wrong in creating user data");
+    res.status(500).send("Something went wrong during login");
+  }
+});
+
+app.post("/signup", async (req, res) => {
+  const { name, email, password } = req.body;
+
+  try {
+    bcrypt.hash(password, 10, async function (err, hash) {
+      if (err) {
+        return res.status(500).send("Error hashing password");
+      }
+      const newUser = await usermodel.create({ name, email, password: hash });
+      res.status(201).send("User created successfully");
+    });
+  } catch (error) {
+    res.status(400).send("Something went wrong in creating user data");
   }
 });
 
 app.listen(5000, () => {
-  console.log("server is running on port 5000");
+  console.log("Server is running on port 5000");
 });

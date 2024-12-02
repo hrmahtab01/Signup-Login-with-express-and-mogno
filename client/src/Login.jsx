@@ -14,7 +14,7 @@ const Login = () => {
         .then((result) => {
           console.log(result.data);
 
-          if (result.data === "login seccessfully") {
+          if (result.data === "Login successfully") {
             navigate("/");
             localStorage.setItem("user", JSON.stringify(result.data));
           } else {
